@@ -1,0 +1,6 @@
+{
+  "name": "AlignForge - Image Registration & Alignment Studio",
+  "description": "Upload multiple images and accurately align them one by one based on a reference image with onion skinning, difference blending, 2-point landmark pinning, and automated alignment.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
