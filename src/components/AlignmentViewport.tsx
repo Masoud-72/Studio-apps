@@ -17,6 +17,7 @@ import {
   Columns,
   Crop,
   Download,
+  Upload,
 } from 'lucide-react';
 import { ImageItem, ViewMode, ToolMode, Point2D } from '../types/alignment';
 import { downloadSingleImage } from '../utils/exportUtils';
@@ -33,6 +34,7 @@ interface AlignmentViewportProps {
   onUpdateLandmark: (pointIndex: number, point: Point2D, isBase: boolean) => void;
   onAutoAlignCurrent: () => void;
   isAutoAligning: boolean;
+  onUploadClick?: () => void;
 }
 
 export const AlignmentViewport: React.FC<AlignmentViewportProps> = ({
@@ -47,6 +49,7 @@ export const AlignmentViewport: React.FC<AlignmentViewportProps> = ({
   onUpdateLandmark,
   onAutoAlignCurrent,
   isAutoAligning,
+  onUploadClick,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -202,12 +205,23 @@ export const AlignmentViewport: React.FC<AlignmentViewportProps> = ({
 
   if (!baseImage || !targetImage) {
     return (
-      <div className="flex-1 bg-neutral-950 flex flex-col items-center justify-center text-neutral-400 p-8">
-        <Layers className="w-12 h-12 text-neutral-600 mb-3" />
-        <h3 className="text-base font-semibold text-neutral-200">No Images Loaded</h3>
-        <p className="text-xs text-neutral-400 mt-1 max-w-sm text-center">
-          Upload 2 or more images or load a sample dataset to begin aligning them one by one.
+      <div className="flex-1 bg-neutral-950 flex flex-col items-center justify-center text-neutral-400 p-8 select-none">
+        <div className="w-16 h-16 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-500 mb-4 shadow-inner">
+          <Upload className="w-8 h-8 text-neutral-400" />
+        </div>
+        <h3 className="text-base font-semibold text-neutral-200">No Images in Alignment Queue</h3>
+        <p className="text-xs text-neutral-400 mt-1.5 max-w-sm text-center mb-5 leading-relaxed">
+          Upload 2 or more images or drag and drop files anywhere to start registering and aligning them one by one.
         </p>
+        {onUploadClick && (
+          <button
+            onClick={onUploadClick}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-md shadow-indigo-950 transition-all cursor-pointer"
+          >
+            <Upload className="w-4 h-4" />
+            <span>Select Images to Align</span>
+          </button>
+        )}
       </div>
     );
   }

@@ -33,7 +33,6 @@ import {
   optimizeForHighestOverlapSimilarity,
   aiGeminiFeatureAlign,
 } from './utils/alignmentAlgorithms';
-import { loadSampleDataset } from './utils/sampleData';
 import { loadImage } from './utils/exportUtils';
 
 export default function App() {
@@ -53,16 +52,11 @@ export default function App() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
+  // Hidden file input ref for top-level uploads
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Cache loaded HTMLImageElements for fast real-time metric computation
   const loadedImagesMap = useRef<Map<string, HTMLImageElement>>(new Map());
-
-  // Load initial sample dataset on mount for instant zero-friction trial
-  useEffect(() => {
-    loadSampleDataset('botanical').then((sampleImages) => {
-      setImages(sampleImages);
-      setCurrentIndex(1); // Point to Image #2 (first target to align against Image #1)
-    });
-  }, []);
 
   // Current Base Reference Image is always image 0 or marked isBase
   const baseImage = images.length > 0 ? images.find((img) => img.isBase) || images[0] : null;
@@ -156,13 +150,6 @@ export default function App() {
         setCurrentIndex(newItems.length > 1 ? 1 : 0);
       }
     }
-  };
-
-  // Load sample dataset
-  const handleLoadSample = async (type: 'botanical' | 'architecture') => {
-    const sample = await loadSampleDataset(type);
-    setImages(sample);
-    setCurrentIndex(1);
   };
 
   // Set selected image as the new Master Base
@@ -479,6 +466,21 @@ export default function App() {
       onDrop={handleDrop}
       className="flex flex-col h-screen w-screen bg-neutral-950 text-neutral-100 overflow-hidden font-sans select-none"
     >
+      {/* Hidden file input for global upload triggers */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            handleUploadFiles(e.target.files);
+            e.target.value = '';
+          }
+        }}
+      />
+
       {/* Top Bar Contract Header */}
       <Header
         images={images}
@@ -487,7 +489,7 @@ export default function App() {
         onOpenExport={() => setIsExportOpen(true)}
         onAutoAlignAll={handleAutoAlignAll}
         isAutoAligningAll={isAutoAligningAll}
-        onLoadSample={handleLoadSample}
+        onUploadClick={() => fileInputRef.current?.click()}
       />
 
       {/* Sequential Image Queue Filmstrip */}
@@ -498,7 +500,6 @@ export default function App() {
         onUploadFiles={handleUploadFiles}
         onSetAsBase={handleSetAsBase}
         onDeleteImage={handleDeleteImage}
-        onLoadSample={handleLoadSample}
         onClearAll={() => {
           setImages([]);
           setCurrentIndex(0);
@@ -519,6 +520,7 @@ export default function App() {
           onUpdateLandmark={handleUpdateLandmark}
           onAutoAlignCurrent={() => handleOptimizeHighestOverlap(alignmentMode)}
           isAutoAligning={isAutoAligningCurrent}
+          onUploadClick={() => fileInputRef.current?.click()}
         />
 
         <ControlPanel

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Play, Download, Sparkles, FolderArchive, Zap, Gauge } from 'lucide-react';
+import { Layers, Play, Download, Sparkles, Upload, Gauge } from 'lucide-react';
 import { ImageItem } from '../types/alignment';
 
 interface HeaderProps {
@@ -9,7 +9,7 @@ interface HeaderProps {
   onOpenExport: () => void;
   onAutoAlignAll: () => void;
   isAutoAligningAll: boolean;
-  onLoadSample: (type: 'botanical' | 'architecture') => void;
+  onUploadClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenExport,
   onAutoAlignAll,
   isAutoAligningAll,
-  onLoadSample,
+  onUploadClick,
 }) => {
   const currentImage = images[currentIndex];
   const nonBaseImages = images.filter((img) => !img.isBase);
@@ -79,26 +79,19 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Zone 3: Primary Actions */}
       <div className="flex items-center gap-2">
         {images.length === 0 ? (
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => onLoadSample('botanical')}
-              className="px-3 py-1.5 text-xs font-medium text-neutral-300 bg-neutral-800 hover:bg-neutral-700 hover:text-white rounded border border-neutral-700 transition-colors whitespace-nowrap"
-            >
-              Demo: Botanical Series
-            </button>
-            <button
-              onClick={() => onLoadSample('architecture')}
-              className="px-3 py-1.5 text-xs font-medium text-neutral-300 bg-neutral-800 hover:bg-neutral-700 hover:text-white rounded border border-neutral-700 transition-colors whitespace-nowrap"
-            >
-              Demo: Architecture
-            </button>
-          </div>
+          <button
+            onClick={onUploadClick}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded transition-colors shadow-sm cursor-pointer"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload Images</span>
+          </button>
         ) : (
           <>
             <button
               onClick={onAutoAlignAll}
               disabled={isAutoAligningAll || images.length <= 1}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-200 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/80 rounded transition-colors disabled:opacity-40 whitespace-nowrap shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-indigo-200 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/80 rounded transition-colors disabled:opacity-40 whitespace-nowrap shadow-xs"
               title="Optimize all remaining images in queue for highest overlap similarity"
             >
               <Sparkles className={`w-3.5 h-3.5 text-indigo-400 ${isAutoAligningAll ? 'animate-spin' : ''}`} />

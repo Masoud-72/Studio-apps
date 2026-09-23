@@ -21,7 +21,6 @@ interface FilmstripProps {
   onUploadFiles: (files: FileList | File[]) => void;
   onSetAsBase: (index: number) => void;
   onDeleteImage: (index: number) => void;
-  onLoadSample: (type: 'botanical' | 'architecture') => void;
   onClearAll: () => void;
 }
 
@@ -32,7 +31,6 @@ export const Filmstrip: React.FC<FilmstripProps> = ({
   onUploadFiles,
   onSetAsBase,
   onDeleteImage,
-  onLoadSample,
   onClearAll,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -101,23 +99,9 @@ export const Filmstrip: React.FC<FilmstripProps> = ({
 
       {/* Thumbnails Queue */}
       {images.length === 0 ? (
-        <div className="flex-1 flex items-center justify-between text-xs text-neutral-400">
+        <div className="flex-1 flex items-center justify-center text-xs text-neutral-400">
           <div className="flex items-center gap-2">
-            <span>No images in queue. Drag & drop images here or load a sample dataset:</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onLoadSample('botanical')}
-              className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
-            >
-              Load Botanical Series
-            </button>
-            <button
-              onClick={() => onLoadSample('architecture')}
-              className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-200 border border-neutral-700 transition-colors"
-            >
-              Load Architecture Series
-            </button>
+            <span>No images in queue. Drag & drop images here or click Upload to get started.</span>
           </div>
         </div>
       ) : (
